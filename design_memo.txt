@@ -1,27 +1,20 @@
 Design Memo
 
-A hash table is a good fit for a contact manager because users usually retrieve
-a phone number by an exact name. Instead of comparing that name with every
-stored contact, the table computes an array index and examines only the contacts
-in that bucket. With a reasonable distribution and a controlled load factor,
-searches and insertions take expected constant time in the number of contacts.
-Hashing itself takes time proportional to the name's length. Python dictionaries
-are not used in this implementation.
+I chose a hash table because a contact manager needs to find phone numbers quickly.
+Rather than checking every contact in a list, it uses the person's name to choose
+an index in an array. When names are spread fairly evenly across the table,
+looking up a contact usually takes only a few steps. My hash function uses ord()
+to turn each character into a number, combines those numbers, and uses the table
+size to keep the index within the array.
 
-My hash function processes each character using ord(), multiplies the running
-value by 31, and reduces it modulo the table size. Character order therefore
-affects the result, although different names can still share an index. I handle
-these collisions through separate chaining. Each array slot holds either None
-or the first Node in a linked list. Each node stores a name, a Contact object,
-and a pointer to the next node. Insertion searches the chain before appending
-a node. If the name already exists, its phone number is updated without adding
-a duplicate. Search follows the same chain and returns None for a missing name.
+Different names can land at the same index, so I used separate chaining to handle
+collisions. Each position in the array holds the start of a linked list. When I
+add a contact, the program checks that list for the name first. If it finds the
+name, it updates the phone number. Otherwise, it adds a new node. Searching
+follows the same list and returns None if the contact is missing.
 
-An engineer might choose a hash table over a list when exact lookups happen
-frequently and repeated linear scans would be costly. A balanced tree is more
-appropriate when sorted traversal or range queries are required. This table
-uses a fixed bucket count as requested, so growing contact collections increase
-chain lengths and can reduce performance. In the worst case, every contact
-shares one bucket and lookup becomes linear. A production version could resize
-and rehash when its load factor grows. Names here are case sensitive, and phone
-numbers remain strings to preserve formatting and leading zeroes.
+An engineer might choose a hash table when exact lookups matter more than keeping
+items sorted. A list is simpler for small collections, while a balanced tree is
+useful for sorted data or range searches. This table has a fixed size, so adding
+many contacts can make its chains longer and slow searches down. If every name
+lands in one bucket, a search can take as long as scanning a list.

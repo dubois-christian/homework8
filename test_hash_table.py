@@ -1,5 +1,3 @@
-"""Run with: python -m unittest -v test_hash_table.py"""
-
 import io
 import unittest
 from contextlib import redirect_stdout
@@ -17,7 +15,7 @@ class HashTableTests(unittest.TestCase):
         self.assertIsNone(node.next)
 
     def test_collision_updates_and_missing_name(self):
-        table = HashTable(1)  # Force all names into the same chain.
+        table = HashTable(1)
         for name in ("Amy", "May", "John"):
             table.insert(name, "original")
         for name in ("Amy", "May", "John"):

@@ -1,6 +1,3 @@
-"""Contact storage using a fixed-size hash table and separate chaining."""
-
-
 class Contact:
     def __init__(self, name: str, number: str):
         self.name = name
@@ -25,14 +22,12 @@ class HashTable:
         self.data = [None] * size
 
     def hash_function(self, key: str) -> int:
-        # Reduce on each step to keep the intermediate integer bounded.
         index = 0
         for character in key:
             index = (index * 31 + ord(character)) % self.size
         return index
 
     def insert(self, key: str, value: str) -> None:
-        """Store a name and phone number, updating an existing name."""
         index = self.hash_function(key)
         current = self.data[index]
         previous = None
@@ -50,7 +45,6 @@ class HashTable:
             previous.next = node
 
     def search(self, key: str):
-        """Return the matching Contact, or None when the name is absent."""
         current = self.data[self.hash_function(key)]
         while current is not None:
             if current.key == key:
@@ -75,7 +69,6 @@ def main():
     table.print_table()
     table.insert("John", "909-876-1234")
     table.insert("Rebecca", "111-555-0002")
-    # These names collide with this hash function when the size is 10.
     table.insert("Amy", "111-222-3333")
     table.insert("May", "222-333-1111")
     assert table.hash_function("Amy") == table.hash_function("May")
